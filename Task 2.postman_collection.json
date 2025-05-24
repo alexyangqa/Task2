@@ -1,0 +1,655 @@
+{
+	"info": {
+		"_postman_id": "f9702356-9097-481f-b2ad-b550e8389cc4",
+		"name": "Task 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28390904"
+	},
+	"item": [
+		{
+			"name": "Create employee without payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 415\r",
+							"pm.test(\"Status code is 415\", () => {\r",
+							"    pm.response.to.have.status(415);\r",
+							"});\r",
+							"\r",
+							"// Assertion to check error message\r",
+							"pm.test(\"Department is updated\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.title).to.eql(\"Unsupported Media Type\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set the values of variables from csv\r",
+							"pm.collectionVariables.set(\"firstName\", pm.iterationData.get(\"FirstName\"));\r",
+							"pm.collectionVariables.set(\"lastName\", pm.iterationData.get(\"LastName\"));\r",
+							"pm.collectionVariables.set(\"dateOfBirth\", pm.iterationData.get(\"DateOfBirth\"));\r",
+							"pm.collectionVariables.set(\"startDate\", pm.iterationData.get(\"StartDate\"));\r",
+							"pm.collectionVariables.set(\"department\", pm.iterationData.get(\"Department\"));\r",
+							"pm.collectionVariables.set(\"jobTitle\", pm.iterationData.get(\"JobTitle\"));\r",
+							"pm.collectionVariables.set(\"email\", pm.iterationData.get(\"Email\"));\r",
+							"pm.collectionVariables.set(\"mobile\", pm.iterationData.get(\"Mobile\"));\r",
+							"pm.collectionVariables.set(\"address\", pm.iterationData.get(\"Address\"));\r",
+							"pm.collectionVariables.set(\"baseSalary\", pm.iterationData.get(\"BaseSalary\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"// Assertion to check if the response status code is 201\r",
+							"pm.test(\"Status code is 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"// Assertion to check if the response body contains the \"_id\" field\r",
+							"pm.test(\"Response contains valid employee ID\", () => {\r",
+							"    pm.expect(responseJson).to.have.property(\"_id\");\r",
+							"});\r",
+							"\r",
+							"// Store the _id value to the collection variable (to be used in subsequent requests)\r",
+							"pm.collectionVariables.set(\"employeeId\", responseJson._id);\r",
+							"\r",
+							"// Define the schema\r",
+							"var schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"FirstName\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"LastName\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"DateOfBirth\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"StartDate\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"Department\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"JobTitle\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"Email\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"Mobile\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"Address\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"BaseSalary\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"FirstName\",\r",
+							"    \"LastName\",\r",
+							"    \"DateOfBirth\",\r",
+							"    \"StartDate\",\r",
+							"    \"Department\",\r",
+							"    \"JobTitle\",\r",
+							"    \"Email\",\r",
+							"    \"Mobile\",\r",
+							"    \"Address\",\r",
+							"    \"BaseSalary\",\r",
+							"    \"_id\"\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"// Assertion to validate the response body against the schema\r",
+							"pm.test('Schema validation', () => {\r",
+							"  pm.response.to.have.jsonSchema (schema);\r",
+							"});\r",
+							"\r",
+							"// Log the full response for debugging purposes\r",
+							"console.log(\"Full response:\", pm.response.text());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set the values of variables from csv\r",
+							"pm.collectionVariables.set(\"firstName\", pm.iterationData.get(\"FirstName\"));\r",
+							"pm.collectionVariables.set(\"lastName\", pm.iterationData.get(\"LastName\"));\r",
+							"pm.collectionVariables.set(\"dateOfBirth\", pm.iterationData.get(\"DateOfBirth\"));\r",
+							"pm.collectionVariables.set(\"startDate\", pm.iterationData.get(\"StartDate\"));\r",
+							"pm.collectionVariables.set(\"department\", pm.iterationData.get(\"Department\"));\r",
+							"pm.collectionVariables.set(\"jobTitle\", pm.iterationData.get(\"JobTitle\"));\r",
+							"pm.collectionVariables.set(\"email\", pm.iterationData.get(\"Email\"));\r",
+							"pm.collectionVariables.set(\"mobile\", pm.iterationData.get(\"Mobile\"));\r",
+							"pm.collectionVariables.set(\"address\", pm.iterationData.get(\"Address\"));\r",
+							"pm.collectionVariables.set(\"baseSalary\", pm.iterationData.get(\"BaseSalary\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"FirstName\": \"{{firstName}}\",\r\n  \"LastName\": \"{{lastName}}\",\r\n  \"DateOfBirth\": \"{{dateOfBirth}}\",\r\n  \"StartDate\": \"{{startDate}}\",\r\n  \"Department\": \"{{department}}\",\r\n  \"JobTitle\": \"{{jobTitle}}\",\r\n  \"Email\": \"{{email}}\",\r\n  \"Mobile\": {{mobile}},\r\n  \"Address\": \"{{address}}\",\r\n  \"BaseSalary\": {{baseSalary}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get invalid employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if invalid employee not exist\r",
+							"pm.test(\"Status code is 404 - Not Found\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/98318d9f02a00f03x853c82p",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"98318d9f02a00f03x853c82p"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/{{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"{{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update employee with space in path param",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 404\r",
+							"pm.test(\"Status code is 404\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"FirstName\": \"{{firstName}}\",\r\n  \"LastName\": \"{{lastName}}\",\r\n  \"DateOfBirth\": \"{{dateOfBirth}}\",\r\n  \"StartDate\": \"{{startDate}}\",\r\n  \"Department\": \"UX\",\r\n  \"JobTitle\": \"{{jobTitle}}\",\r\n  \"Email\": \"{{email}}\",\r\n  \"Mobile\": {{mobile}},\r\n  \"Address\": \"{{address}}\",\r\n  \"BaseSalary\": {{baseSalary}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/ {{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						" {{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"FirstName\": \"{{firstName}}\",\r\n  \"LastName\": \"{{lastName}}\",\r\n  \"DateOfBirth\": \"{{dateOfBirth}}\",\r\n  \"StartDate\": \"{{startDate}}\",\r\n  \"Department\": \"UX\",\r\n  \"JobTitle\": \"{{jobTitle}}\",\r\n  \"Email\": \"{{email}}\",\r\n  \"Mobile\": {{mobile}},\r\n  \"Address\": \"{{address}}\",\r\n  \"BaseSalary\": {{baseSalary}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/{{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"{{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get updated employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Assertion to check if the department value was correctly updated for the employee\r",
+							"pm.test(\"Department is updated\", () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.Department).to.eql(\"UX\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/{{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"{{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "elete employee with missing ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 404\r",
+							"pm.test(\"Status code is 405\", () => {\r",
+							"    pm.response.to.have.status(405);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the response status code is 200\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/{{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"{{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get deleted employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Assertion to check if the employee was correctly deleted\r",
+							"pm.test(\"Status code is 404 - Not Found\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}{{unique_id}}/employee/{{employeeId}}",
+					"host": [
+						"{{base_url}}{{unique_id}}"
+					],
+					"path": [
+						"employee",
+						"{{employeeId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "firstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lastName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "dateOfBirth",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "startDate",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "department",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "jobTitle",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "mobile",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "address",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "baseSalary",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "unique_id",
+			"value": "0b968acc306940968b383df8655c8301",
+			"type": "string"
+		},
+		{
+			"key": "employeeId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "https://crudcrud.com/api/",
+			"type": "string"
+		}
+	]
+}
